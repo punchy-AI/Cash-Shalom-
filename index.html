@@ -2,7 +2,7 @@
 <html lang="ht">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Cash Shalom · KAZYE</title>
     <!-- PWA manifest -->
     <link rel="manifest" href="manifest.json">
@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5571/5571550.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0066ff">
+    <meta name="theme-color" content="#001f33">
     <style>
         * {
             margin: 0;
@@ -62,7 +62,7 @@
         /* HEADER BLEU ÉLECTRIQUE */
         .cash-header {
             background: var(--header-bg);
-            padding: 12px 12px 8px 12px;
+            padding: calc(12px + env(safe-area-inset-top, 0px)) 12px 8px 12px;
             color: white;
             border-bottom: 3px solid var(--electric-blue);
             position: sticky;
@@ -507,7 +507,7 @@
         }
         .calc-btn.equals {
             background: #00aa66;
-            grid-column: span 2;
+            grid-column: 1 / -1;
         }
         .calc-btn.del {
             background: #cc6600;
@@ -534,6 +534,10 @@
             cursor: pointer;
             border: 2px solid white;
         }
+        button { cursor: pointer; }
+        button:focus-visible, .input-field:focus-visible { outline: 3px solid #80d4ff; outline-offset: 2px; }
+        .plan-scroll::-webkit-scrollbar { display: none; }
+        body, .app { min-height: 100dvh; }
     </style>
 </head>
 <body>
@@ -543,7 +547,7 @@
             <div class="header-row">
                 <span class="cash-title">⚡CASH SHALOM</span>
                 <div class="header-controls">
-                    <button class="icon-btn" id="calcToggle">🧮</button>
+                    <button class="icon-btn" id="calcToggle" aria-label="Kalkilatris">🧮</button>
                     <span class="badge">✡️</span>
                 </div>
             </div>
@@ -585,7 +589,7 @@
                 <button id="modeRetrait" class="mode-btn">💰 RETRÈ</button>
             </div>
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <input type="number" id="montantField" class="input-field" placeholder="Montan $" min="0">
+                <input type="number" id="montantField" class="input-field" placeholder="Montan $" min="0" step="any" inputmode="decimal">
                 <button class="btn-action" id="actionButton">🧮 KALKILE</button>
             </div>
         </div>
@@ -627,13 +631,8 @@
         <div class="calc-container">
             <div class="calc-header">
                 <div class="calc-header-left">
-                    <span class="active">DEG</span>
-                    <span>RAD</span>
-                </div>
-                <div class="calc-header-right">
-                    <span>sin</span>
-                    <span>cos</span>
-                    <span>tan</span>
+                    <span class="active" id="angDeg" onclick="calcSetAngle('DEG')">DEG</span>
+                    <span id="angRad" onclick="calcSetAngle('RAD')">RAD</span>
                 </div>
             </div>
             
@@ -645,7 +644,7 @@
                 <button class="calc-sci-btn" onclick="calcFn('ln')">ln</button>
                 <button class="calc-sci-btn" onclick="calcFn('log')">log</button>
                 <button class="calc-sci-btn" onclick="calcFn('sqrt')">√</button>
-                <button class="calc-sci-btn" onclick="calcInput('**')">^</button>
+                <button class="calc-sci-btn" onclick="calcInput('^')">^</button>
             </div>
             <div class="calc-scientific-row">
                 <button class="calc-sci-btn special" onclick="calcInput('π')">π</button>
@@ -700,6 +699,7 @@
 
             // ---------- CONSTANTES STORAGE ----------
             const STORAGE_KEY = 'cashShalomData';
+            const r2 = x => Math.round(x * 100) / 100;
 
             // DOM principal
             const balansDisplay = document.getElementById('balansDisplay');
@@ -737,7 +737,7 @@
                 };
                 try {
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-                    console.log('Données sauvegardées');
+                    
                 } catch (e) {
                     console.error('Erreur de sauvegarde:', e);
                 }
@@ -748,11 +748,11 @@
                     const savedData = localStorage.getItem(STORAGE_KEY);
                     if (savedData) {
                         const data = JSON.parse(savedData);
-                        balans = data.balans || 0;
-                        plan = data.plan || 5;
-                        paid = data.paid || new Array(31).fill(false);
-                        mode = data.mode || 'depot';
-                        console.log('Données chargées');
+                        const b = Number(data.balans); balans = (isFinite(b) && b >= 0) ? r2(b) : 0;
+                        plan = PLAN_LIST.includes(data.plan) ? data.plan : 5;
+                        paid = Array.from({length: 31}, (_, i) => i > 0 && Array.isArray(data.paid) && data.paid[i] === true);
+                        mode = data.mode === 'retrait' ? 'retrait' : 'depot';
+                        
                     }
                 } catch (e) {
                     console.error('Erreur de chargement:', e);
@@ -763,7 +763,6 @@
             function updateBalansUI() {
                 balansDisplay.innerText = balans.toFixed(2);
                 finalBalance.innerText = balans.toFixed(2);
-                saveData();
             }
 
             // --- NOUVELLE FONCTION: Met à jour le total en haut ---
@@ -789,6 +788,7 @@
                     btn.className = 'plan-item';
                     if (p === plan) btn.classList.add('active');
                     btn.onclick = () => {
+                        if (p !== plan && paid.some(Boolean) && !confirm('Chanje plan ap chanje pri kazye ki deja peye yo. Kontinye?')) return;
                         document.querySelectorAll('.plan-item').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
                         plan = p;
@@ -838,7 +838,7 @@
                 for (let i=1; i<=30; i++) { if(paid[i]) { total += i*plan; last = i; } }
                 totalPaidDisplay.innerText = total.toFixed(2)+'$';
                 lastPaidLabel.innerText = last;
-                let first = 1;
+                let first = '—';
                 for (let i=1; i<=30; i++) { if(!paid[i]) { first = i; break; } }
                 availableStartLabel.innerText = first;
                 return { total, last };
@@ -847,13 +847,13 @@
             function handleDepot() {
                 const m = parseFloat(montantField.value);
                 if (isNaN(m) || m<=0) { alert('Montan valab'); return; }
-                balans += m;
+                balans = r2(balans + m);
                 let rest = balans;
                 const newSel = [];
                 for (let k=1; k<=30; k++) {
                     if (!paid[k]) {
                         const price = k * plan;
-                        if (price <= rest) { newSel.push(k); rest -= price; } else break;
+                        if (price <= rest) { newSel.push(k); rest = r2(rest - price); } else break;
                     }
                 }
                 newSel.forEach(k => { if(!paid[k]) { paid[k]=true; document.querySelector(`.kaz[data-kazye="${k}"]`)?.classList.add('paid'); } });
@@ -870,7 +870,7 @@
                 const m = parseFloat(montantField.value);
                 if (isNaN(m) || m<=0) { alert('Montan valab'); return; }
                 if (m > balans) { alert('Balans ensifizan'); return; }
-                balans -= m;
+                balans = r2(balans - m);
                 updateBalansUI();
                 // Bar anlè pa chanje paske paid[] pa chanje
                 autoList.innerText = '— Retrè senp';
@@ -890,7 +890,8 @@
                 saveData();
             }
 
-            function clearAllPaid() { 
+            function clearAllPaid() {
+                if (!confirm('Efase tout kazye peye yo?')) return; 
                 for (let i=1;i<=30;i++) { 
                     paid[i]=false; 
                     document.querySelector(`.kaz[data-kazye="${i}"]`)?.classList.remove('paid'); 
@@ -902,78 +903,159 @@
             
             function verifyBalans() { 
                 let t = updateTotalPaidAndLabels().total; 
-                alert(t>balans ? `⚠️ Depase ${t.toFixed(2)}$ > ${balans.toFixed(2)}$` : `✅ OK Rest: ${(balans-t).toFixed(2)}$`); 
+                alert(`✅ Peye: ${t.toFixed(2)}$ · Balans rete: ${balans.toFixed(2)}$ · Total: ${(t + balans).toFixed(2)}$`); 
             }
             
-            function resetBalance() { 
+            function resetBalance() {
+                if (!confirm('Remèt balans a 0?')) return; 
                 balans = 0; 
                 updateBalansUI(); 
                 saveData();
             }
 
-            // ---------- CALCULATRICE PLEIN ÉCRAN (pa chanje) ----------
+            // ---------- CALCULATRICE PLEIN ÉCRAN (san eval) ----------
             let calcStr = '0';
+            let calcFresh = false;      // true apre "=" oswa erè
+            let angleMode = 'DEG';
             const calcDisplay = document.getElementById('calcDisplay');
-            
+
             function updateCalcDisplay() {
-                calcDisplay.innerText = calcStr;
+                calcDisplay.innerText = calcStr.replace(/\*/g, '×').replace(/\//g, '÷').replace(/sqrt/g, '√');
             }
-            
-            window.calcInput = function(c) {
-                if (c === 'π') c = Math.PI.toString();
-                if (c === 'e') c = Math.E.toString();
-                if (c === '%') c = '/100';
-                if (calcStr === '0' && !'+-*/'.includes(c)) {
-                    calcStr = c;
-                } else {
-                    calcStr += c;
+            function calcStart(c) {
+                if (calcStr === 'Error') { calcStr = '0'; calcFresh = false; }
+                if (calcFresh) { if (!/^[-+*\/^%!]$/.test(c)) calcStr = '0'; calcFresh = false; }
+            }
+            function calcFormat(v) {
+                if (!isFinite(v)) throw new Error('math');
+                if (Math.abs(v) < 1e-12) v = 0;
+                return parseFloat(v.toPrecision(12)).toString().replace(/e\+?(-?\d+)/, '*10^$1');
+            }
+            function calcEval(src) {
+                const bad = () => { throw new Error('syntax'); };
+                const toks = [];
+                let i = 0;
+                while (i < src.length) {
+                    const ch = src[i];
+                    if (/[0-9.]/.test(ch)) {
+                        let j = i;
+                        while (j < src.length && /[0-9.]/.test(src[j])) j++;
+                        const t = src.slice(i, j);
+                        if (t === '.' || t.split('.').length > 2) bad();
+                        toks.push({ n: parseFloat(t) }); i = j;
+                    } else if (ch === 'π') { toks.push({ n: Math.PI }); i++; }
+                    else if (ch === 'e') { toks.push({ n: Math.E }); i++; }
+                    else {
+                        const f = /^(sqrt|ln|log|sin|cos|tan)\(/.exec(src.slice(i));
+                        if (f) { toks.push({ f: f[1] }, { o: '(' }); i += f[0].length; }
+                        else if ('+-*/^()!%'.includes(ch)) { toks.push({ o: ch }); i++; }
+                        else bad();
+                    }
                 }
+                let p = 0;
+                const isO = c => toks[p] && toks[p].o === c;
+                const rad = x => angleMode === 'DEG' ? x * Math.PI / 180 : x;
+                function applyFn(f, a) {
+                    switch (f) {
+                        case 'sqrt': if (a < 0) bad(); return Math.sqrt(a);
+                        case 'ln':   if (a <= 0) bad(); return Math.log(a);
+                        case 'log':  if (a <= 0) bad(); return Math.log10(a);
+                        case 'sin':  return Math.sin(rad(a));
+                        case 'cos':  return Math.cos(rad(a));
+                        default:     return Math.tan(rad(a));
+                    }
+                }
+                function fact(n) {
+                    if (!Number.isInteger(n) || n < 0 || n > 170) bad();
+                    let r = 1;
+                    for (let k = 2; k <= n; k++) r *= k;
+                    return r;
+                }
+                function expr() {
+                    let v = term();
+                    while (isO('+') || isO('-')) { const o = toks[p++].o; const r = term(); v = o === '+' ? v + r : v - r; }
+                    return v;
+                }
+                function term() {
+                    let v = unary();
+                    for (;;) {
+                        if (isO('*') || isO('/')) { const o = toks[p++].o; const r = unary(); v = o === '*' ? v * r : v / r; }
+                        else if (toks[p] && (toks[p].n !== undefined || toks[p].f || isO('('))) v *= unary();   // 2π, 3(4)
+                        else break;
+                    }
+                    return v;
+                }
+                function unary() {
+                    if (isO('-')) { p++; return -unary(); }
+                    if (isO('+')) { p++; return unary(); }
+                    return power();
+                }
+                function power() {
+                    const b = postfix();
+                    if (isO('^')) { p++; return Math.pow(b, unary()); }
+                    return b;
+                }
+                function postfix() {
+                    let v = primary();
+                    for (;;) {
+                        if (isO('!')) { p++; v = fact(v); }
+                        else if (isO('%')) { p++; v /= 100; }
+                        else break;
+                    }
+                    return v;
+                }
+                function primary() {
+                    const t = toks[p++];
+                    if (!t) bad();
+                    if (t.n !== undefined) return t.n;
+                    if (t.f) { p++; const a = expr(); if (isO(')')) p++; return applyFn(t.f, a); }
+                    if (t.o === '(') { const v = expr(); if (isO(')')) p++; return v; }
+                    return bad();
+                }
+                const res = expr();
+                if (p < toks.length) bad();
+                return res;
+            }
+
+            window.calcInput = function(c) {
+                calcStart(c);
+                if (c === '.' && calcStr.split(/[^0-9.]/).pop().includes('.')) return;
+                if (calcStr === '0' && /^[0-9πe(]$/.test(c)) calcStr = c;
+                else calcStr += c;
                 updateCalcDisplay();
             };
-            
             window.calcOp = function(op) {
+                calcStart(op);
+                if (/[-+*\/]$/.test(calcStr)) calcStr = calcStr.slice(0, -1);
                 calcStr += op;
                 updateCalcDisplay();
             };
-            
             window.calcFn = function(fn) {
-                if (fn === 'sqrt') calcStr = `Math.sqrt(${calcStr})`;
-                else if (fn === 'ln') calcStr = `Math.log(${calcStr})`;
-                else if (fn === 'log') calcStr = `Math.log10(${calcStr})`;
-                else if (fn === 'fact') {
-                    let n = parseInt(calcStr);
-                    let f = 1;
-                    for (let i=2; i<=n; i++) f *= i;
-                    calcStr = f.toString();
-                } else if (fn === 'sin') calcStr = `Math.sin(${calcStr})`;
-                else if (fn === 'cos') calcStr = `Math.cos(${calcStr})`;
-                else if (fn === 'tan') calcStr = `Math.tan(${calcStr})`;
+                calcStart(fn === 'fact' ? '!' : fn);
+                if (fn === 'fact') calcStr += '!';
+                else calcStr = (calcStr === '0' ? '' : calcStr) + fn + '(';
                 updateCalcDisplay();
             };
-            
-            window.calcClearAll = function() { 
-                calcStr = '0'; 
-                updateCalcDisplay(); 
-            };
-            
+            window.calcClearAll = function() { calcStr = '0'; calcFresh = false; updateCalcDisplay(); };
             window.calcDelete = function() {
-                if (calcStr.length > 1) {
-                    calcStr = calcStr.slice(0, -1);
-                } else {
-                    calcStr = '0';
-                }
+                if (calcStr === 'Error') calcStr = '0';
+                else calcStr = calcStr.replace(/(sqrt|ln|log|sin|cos|tan)\($|.$/, '') || '0';
+                calcFresh = false;
                 updateCalcDisplay();
             };
-            
             window.calcEquals = function() {
-                try {
-                    calcStr = eval(calcStr).toString();
-                } catch {
-                    calcStr = 'Error';
-                }
+                try { calcStr = calcFormat(calcEval(calcStr)); }
+                catch { calcStr = 'Error'; }
+                calcFresh = true;
                 updateCalcDisplay();
             };
-            
+            window.calcSetAngle = function(m) {
+                angleMode = m;
+                document.getElementById('angDeg').classList.toggle('active', m === 'DEG');
+                document.getElementById('angRad').classList.toggle('active', m === 'RAD');
+            };
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') calcModal.classList.remove('active'); });
+
             calcToggle.addEventListener('click', () => calcModal.classList.add('active'));
             closeCalc.addEventListener('click', () => calcModal.classList.remove('active'));
             calcModal.addEventListener('click', (e) => { if(e.target === calcModal) calcModal.classList.remove('active'); });
