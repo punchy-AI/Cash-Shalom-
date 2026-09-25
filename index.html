@@ -935,4 +935,1157 @@
             <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
             <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></symbol>
             <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3 20 17H4zM12 21 4 7h16z"/></symbol>
-            <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 1
+            <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+            <symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/></symbol>
+            <symbol id="i-out" viewBox="0 0 24 24"><path d="M12 21V9m0 0-4 4m4-4 4 4M4 3h16"/></symbol>
+            <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+            <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+            <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+            <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></symbol>
+            <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3m0 0-4 4m4-4 4 4M4 21h16"/></symbol>
+            <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/></symbol>
+            <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+        </defs>
+    </svg>
+    <div class="app">
+        <!-- HEADER avec bouton calculatrice -->
+        <div class="cash-header">
+            <div class="header-row">
+                <span class="cash-title">Cash Shalom</span>
+                <div class="header-controls">
+                    <button class="icon-btn" id="themeToggle" type="button" aria-label="Chanje tèm" title="Chanje tèm"><svg class="ic icon-moon" aria-hidden="true"><use href="#i-moon"/></svg><svg class="ic icon-sun" aria-hidden="true"><use href="#i-sun"/></svg></button>
+                    <button class="icon-btn" id="calcToggle" aria-label="Kalkilatris"><svg class="ic" aria-hidden="true"><use href="#i-calc"/></svg></button>
+                    <span class="badge" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></span>
+                </div>
+            </div>
+            
+            <!-- --- NOUVEAU: BAR TOTAL KAZYE ANLÈ --- -->
+            <div class="total-kazye-bar">
+                <div class="total-label">
+                    <span>Total kazye selèksyonne</span>
+                    <span class="count-badge" id="selectedCountHeader">0</span>
+                </div>
+                <div>
+                    <span class="total-value" id="selectedTotalHeader">0.00</span>
+                    <span class="total-currency">$</span>
+                </div>
+            </div>
+            <!-- --- FIN BAR TOTAL KAZYE --- -->
+            
+            <div class="balans-sticky">
+                <span class="balans-label">Balans</span>
+                <div style="display: flex; align-items: baseline;">
+                    <span class="balans-value" id="balansDisplay">0.00</span>
+                    <span class="balans-currency">$</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN carte -->
+        <div class="card area-plan">
+            <div class="section-title"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg><span>Plan (pri = nimewo × plan)</span></div>
+            <div class="plan-scroll">
+                <div class="plan-btns" id="planButtons"></div>
+            </div>
+        </div>
+
+        <!-- DEPO/RETRAIT carte -->
+        <div class="card area-depo">
+            <div class="mode-group" id="modeGroup">
+                <button id="modeDepot" class="mode-btn active"><svg class="ic" aria-hidden="true"><use href="#i-in"/></svg>Depo</button>
+                <button id="modeRetrait" class="mode-btn"><svg class="ic" aria-hidden="true"><use href="#i-out"/></svg>Retrè</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="number" id="montantField" class="input-field" placeholder="Montan $" min="0" step="any" inputmode="decimal">
+                <button class="btn-action" id="actionButton">Kalkile</button>
+                <p class="retrait-info" id="retraitInfo" hidden></p>
+                <button type="button" class="btn-kraze" id="krazeBtn" hidden>Kraze</button>
+            </div>
+        </div>
+
+        <!-- KAZYE carte -->
+        <div class="card area-kazye">
+            <div class="paid-header">
+                <span class="paid-total" id="totalPaidDisplay">0.00$</span>
+                <button class="btn-clear" id="clearPaidBtn"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Efase</button>
+            </div>
+            <p style="color:var(--text-2); font-size:13px; margin:4px 0;">▼ klike sou kaz vèt si peye</p>
+            <div class="kazye-grid" id="kazyeGrid"></div>
+        </div>
+
+        <!-- REZILTA CARD -->
+        <div class="result-card">
+            <div style="display: flex; justify-content: space-between;">
+                <span>Balans final</span>
+                <span class="final-balance-large" id="finalBalance">0.00</span>
+            </div>
+            <div class="auto-list-mobile" id="autoList">—</div>
+            <div class="chip-group">
+                <span class="chip">Plan: <span id="planLabel">5$</span></span>
+                <span class="chip">Dènye: <span id="lastPaidLabel">0</span></span>
+                <span class="chip">Disponib: <span id="availableStartLabel">1</span></span>
+                <span class="chip" id="mankeChip" hidden>Manke: <span id="mankeLabel"></span>$</span>
+            </div>
+        </div>
+
+        <!-- BOUTON FÒTER -->
+        <div class="footer-actions f-main">
+            <button class="btn-footer" id="verifyBtn"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Verifye</button>
+            <button class="btn-footer" id="resetBalanceBtn"><svg class="ic" aria-hidden="true"><use href="#i-reset"/></svg>Reset balans</button>
+        </div>
+        <div class="footer-actions f-hist">
+            <button class="btn-footer" id="histBtn"><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg>Istorik &amp; Sovgad</button>
+        </div>
+        <div class="footer-shalom">Cash Shalom</div>
+    </div>
+
+    <!-- MODAL CALCULATRICE PLEIN ÉCRAN -->
+    <div class="calc-modal" id="calcModal">
+        <div class="calc-container" id="calcContainer" tabindex="-1">
+            <div class="calc-header">
+                <div class="calc-header-left">
+                    <span class="active" id="angDeg" role="button" tabindex="0" onclick="calcSetAngle('DEG')">DEG</span>
+                    <span id="angRad" role="button" tabindex="0" onclick="calcSetAngle('RAD')">RAD</span>
+                </div>
+            </div>
+            
+            <div class="calc-display" id="calcDisplay">0</div>
+            
+            <!-- Lignes scientifiques -->
+            <div class="calc-scientific-row">
+                <button class="calc-sci-btn" onclick="calcInput('%')">%</button>
+                <button class="calc-sci-btn" onclick="calcFn('ln')">ln</button>
+                <button class="calc-sci-btn" onclick="calcFn('log')">log</button>
+                <button class="calc-sci-btn" onclick="calcFn('sqrt')">√</button>
+                <button class="calc-sci-btn" onclick="calcInput('^')">^</button>
+            </div>
+            <div class="calc-scientific-row">
+                <button class="calc-sci-btn special" onclick="calcInput('π')">π</button>
+                <button class="calc-sci-btn special" onclick="calcInput('e')">e</button>
+                <button class="calc-sci-btn" onclick="calcInput('(')">(</button>
+                <button class="calc-sci-btn" onclick="calcInput(')')">)</button>
+                <button class="calc-sci-btn" onclick="calcFn('fact')">!</button>
+            </div>
+            
+            <!-- Grille principale avec boutons C et ← -->
+            <div class="calc-buttons">
+                <button class="calc-btn" onclick="calcInput('7')">7</button>
+                <button class="calc-btn" onclick="calcInput('8')">8</button>
+                <button class="calc-btn" onclick="calcInput('9')">9</button>
+                <button class="calc-btn operator" onclick="calcOp('/')">÷</button>
+                <button class="calc-btn operator" onclick="calcFn('sin')">sin</button>
+                
+                <button class="calc-btn" onclick="calcInput('4')">4</button>
+                <button class="calc-btn" onclick="calcInput('5')">5</button>
+                <button class="calc-btn" onclick="calcInput('6')">6</button>
+                <button class="calc-btn operator" onclick="calcOp('*')">×</button>
+                <button class="calc-btn operator" onclick="calcFn('cos')">cos</button>
+                
+                <button class="calc-btn" onclick="calcInput('1')">1</button>
+                <button class="calc-btn" onclick="calcInput('2')">2</button>
+                <button class="calc-btn" onclick="calcInput('3')">3</button>
+                <button class="calc-btn operator" onclick="calcOp('-')">−</button>
+                <button class="calc-btn operator" onclick="calcFn('tan')">tan</button>
+                
+                <button class="calc-btn" onclick="calcInput('0')">0</button>
+                <button class="calc-btn" onclick="calcInput('.')">.</button>
+                <button class="calc-btn clear" onclick="calcClearAll()">C</button>
+                <button class="calc-btn operator" onclick="calcOp('+')">+</button>
+                <button class="calc-btn del" onclick="calcDelete()">←</button>
+                
+                <!-- Bouton = sur deux colonnes -->
+                <button class="calc-btn equals" onclick="calcEquals()">=</button>
+            </div>
+            
+            <button class="calc-close" id="closeCalc">Fèmen</button>
+        </div>
+    </div>
+
+    <!-- MODAL HISTORIQUE & SAUVEGARDE -->
+    <div class="hist-modal" id="histModal">
+        <div class="hist-container">
+            <div class="hist-head">
+                <span><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg>Istorik &amp; Sovgad</span>
+                <button id="closeHist" aria-label="Fèmen"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+            </div>
+            <div class="hist-summary" id="histSummary"></div>
+            <div class="hist-actions">
+                <button id="exportBtn"><svg class="ic" aria-hidden="true"><use href="#i-upload"/></svg>Ekspòte</button>
+                <button id="importBtn"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Enpòte</button>
+                <button id="histClearBtn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Efase<span id="histClearCount"></span></button>
+                <input type="file" id="importFile" accept="application/json,.json" hidden>
+            </div>
+            <p class="hist-note" id="lastBackupLabel"></p>
+            <div class="hist-filters" id="histFilters" role="group">
+                <button type="button" data-f="all" class="active" aria-pressed="true">Tout</button>
+                <button type="button" data-f="depot" aria-pressed="false">Depo</button>
+                <button type="button" data-f="retrait" aria-pressed="false">Retrè</button>
+                <button type="button" data-f="kazye" aria-pressed="false">Kazye</button>
+                <button type="button" data-f="taks" aria-pressed="false">Taks</button>
+            </div>
+            <input type="search" id="histSearch" class="input-field" placeholder="Chèche…" autocomplete="off">
+            <div class="hist-list" id="histList"></div>
+        </div>
+    </div>
+
+    <!-- BOÎTE DE DIALOGUE (remplace alert / confirm) -->
+    <div class="dlg" id="dlg" role="alertdialog" aria-modal="true" aria-describedby="dlgMsg">
+        <div class="dlg-box">
+            <p class="dlg-msg" id="dlgMsg"></p>
+            <div class="dlg-actions">
+                <button type="button" id="dlgCancel">Anile</button>
+                <button type="button" class="dlg-ok" id="dlgOk">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- ÉTAT PRINCIPAL ----------
+            let balans = 0;
+            let plan = 5;
+            const PLAN_LIST = [1,2,3,4,5,10,15,20,50];
+            let paidAmt = new Array(31).fill(0);   // montant RÉELLEMENT payé par case (0 = case libre)
+            let ledger = [];                        // journal des mouvements = source de vérité
+            let lastBackup = null;                  // date ISO de la dernière sauvegarde exportée
+            let mode = 'depot';
+            let histPartial = false;                // true si des lignes de l'historique ont été effacées
+            let autoPreview = false;                // true seulement après Depo/Retrè : montre le "jaune" sur la case suivante
+
+            // ---------- CONSTANTES ----------
+            const STORAGE_KEY = 'cashShalomData';
+            const DATA_VERSION = 3;
+            const LEDGER_TYPES = ['init','depot','retrait','kazye','anile','efase','reset','taks','plan'];
+            const SIGN = { init: 1, depot: 1, anile: 1, efase: 1, retrait: -1, kazye: -1, reset: -1, taks: -1, plan: -1 };
+            // Taxe par plan : prélevée seulement à la fermeture du compte (Kraze)
+            const TAX = { 1: 20, 2: 30, 3: 40, 4: 60, 5: 80, 10: 100, 15: 150, 20: 200, 50: 250 };
+            const r2 = x => Math.round(x * 100) / 100;
+            const fmt = x => String(+Number(x).toFixed(2));
+            const near = (a, b) => Math.abs(a - b) < 0.005;
+            const isPaid = k => paidAmt[k] > 0;
+            const sumPaid = () => r2(paidAmt.reduce((a, b) => a + b, 0));
+
+            // DOM principal
+            const balansDisplay = document.getElementById('balansDisplay');
+            const planButtons = document.getElementById('planButtons');
+            const kazyeGrid = document.getElementById('kazyeGrid');
+            const totalPaidDisplay = document.getElementById('totalPaidDisplay');
+            const modeDepot = document.getElementById('modeDepot');
+            const modeRetrait = document.getElementById('modeRetrait');
+            const actionButton = document.getElementById('actionButton');
+            const montantField = document.getElementById('montantField');
+            const finalBalance = document.getElementById('finalBalance');
+            const autoList = document.getElementById('autoList');
+            const planLabel = document.getElementById('planLabel');
+            const lastPaidLabel = document.getElementById('lastPaidLabel');
+            const availableStartLabel = document.getElementById('availableStartLabel');
+            const clearPaidBtn = document.getElementById('clearPaidBtn');
+            const verifyBtn = document.getElementById('verifyBtn');
+            const resetBalanceBtn = document.getElementById('resetBalanceBtn');
+            const calcToggle = document.getElementById('calcToggle');
+            const calcModal = document.getElementById('calcModal');
+            const closeCalc = document.getElementById('closeCalc');
+            const selectedTotalHeader = document.getElementById('selectedTotalHeader');
+            const selectedCountHeader = document.getElementById('selectedCountHeader');
+            // Historique & sauvegarde
+            const histBtn = document.getElementById('histBtn');
+            const histModal = document.getElementById('histModal');
+            const closeHist = document.getElementById('closeHist');
+            const histSummary = document.getElementById('histSummary');
+            const histList = document.getElementById('histList');
+            const lastBackupLabel = document.getElementById('lastBackupLabel');
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const importFile = document.getElementById('importFile');
+
+            // ---------- BOÎTES DE DIALOGUE (remplacent alert / confirm) ----------
+            const dlg = document.getElementById('dlg');
+            const dlgMsg = document.getElementById('dlgMsg');
+            const dlgOk = document.getElementById('dlgOk');
+            const dlgCancel = document.getElementById('dlgCancel');
+            let dlgQueue = Promise.resolve();
+            function openDialog(message, opts) {
+                return new Promise(resolve => {
+                    const prev = document.activeElement;
+                    dlgMsg.textContent = message;
+                    dlgCancel.hidden = !opts.cancel;
+                    dlgOk.textContent = opts.cancel ? 'Konfime' : 'OK';
+                    dlgOk.classList.toggle('danger', !!opts.danger);
+                    dlg.classList.add('active');
+                    (opts.cancel && opts.danger ? dlgCancel : dlgOk).focus();
+                    function done(v) {
+                        dlg.classList.remove('active');
+                        dlgOk.removeEventListener('click', onOk);
+                        dlgCancel.removeEventListener('click', onCancel);
+                        document.removeEventListener('keydown', onKey, true);
+                        if (prev && prev.focus && document.contains(prev)) prev.focus({ preventScroll: true });
+                        resolve(v);
+                    }
+                    function onOk() { done(true); }
+                    function onCancel() { done(false); }
+                    function onKey(e) {
+                        if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); done(!opts.cancel); }
+                        else if (e.key === 'Tab') {
+                            e.preventDefault();
+                            const els = opts.cancel ? [dlgCancel, dlgOk] : [dlgOk];
+                            const i = els.indexOf(document.activeElement);
+                            els[(i + (e.shiftKey ? els.length - 1 : 1)) % els.length].focus();
+                        }
+                    }
+                    dlgOk.addEventListener('click', onOk);
+                    dlgCancel.addEventListener('click', onCancel);
+                    document.addEventListener('keydown', onKey, true);
+                });
+            }
+            function showDialog(message, opts) {
+                const p = dlgQueue.then(() => openDialog(message, opts));
+                dlgQueue = p.catch(() => {});
+                return p;
+            }
+            const uiAlert = message => showDialog(message, { cancel: false });
+            const uiConfirm = (message, o) => showDialog(message, { cancel: true, danger: !!(o && o.danger) });
+
+            // Rappel de sauvegarde + filtres d'historique (éléments)
+            const histFilters = document.getElementById('histFilters');
+            const histSearch = document.getElementById('histSearch');
+            const calcContainer = document.getElementById('calcContainer');
+            const retraitInfo = document.getElementById('retraitInfo');
+            const krazeBtn = document.getElementById('krazeBtn');
+            const mankeChip = document.getElementById('mankeChip');
+            const mankeLabel = document.getElementById('mankeLabel');
+            const histClearBtn = document.getElementById('histClearBtn');
+            const histClearCount = document.getElementById('histClearCount');
+
+            // ---------- JOURNAL (LEDGER) ----------
+            // Effet sur le balans : init/depot/anile/efase = +, retrait/kazye/reset = −
+            function log(type, extra) {
+                ledger.push(Object.assign({ t: new Date().toISOString(), type: type }, extra));
+            }
+
+// Applique une écriture du journal à un état {b, pa} (utilisé par replay et par l'historique)
+            function step(st, e) {
+                switch (e.type) {
+                    case 'plan':   st.b = 0; st.pa.fill(0); break;                       // changement de plan : compte remis à 0
+                    case 'kazye':  st.b = r2(st.b - e.amount); st.pa[e.k] = e.amount; break;
+                    case 'anile':  st.b = r2(st.b + e.amount); st.pa[e.k] = 0; break;
+                    case 'efase':  st.b = r2(st.b + e.amount); st.pa.fill(0); break;
+                    default:       st.b = r2(st.b + SIGN[e.type] * e.amount);
+                }
+            }
+
+            // Rejoue le journal : renvoie le balans et les montants par case qu'il implique
+            function replay(list) {
+                const st = { b: 0, pa: new Array(31).fill(0) };
+                list.forEach(e => step(st, e));
+                return { balans: st.b, paidAmt: st.pa };
+            }
+
+            function cleanEntry(e) {
+                if (!e || typeof e !== 'object' || !LEDGER_TYPES.includes(e.type)) return null;
+                const amount = Number(e.amount);
+                if (!isFinite(amount) || amount < 0 || typeof e.t !== 'string') return null;
+                const out = { t: e.t, type: e.type, amount: r2(amount) };
+                if (e.type === 'kazye' || e.type === 'anile') {
+                    if (!Number.isInteger(e.k) || e.k < 1 || e.k > 30) return null;
+                    out.k = e.k;
+                    if (PLAN_LIST.includes(e.plan)) out.plan = e.plan;
+                    if (e.auto === true) out.auto = true;
+                }
+                if (e.type === 'efase' && e.auto === true) out.auto = true;
+                if ((e.type === 'retrait' || e.type === 'taks' || e.type === 'plan') && PLAN_LIST.includes(e.plan)) out.plan = e.plan;
+                if (e.type === 'retrait' && e.kraze === true) out.kraze = true;
+                if (e.type === 'plan' && PLAN_LIST.includes(e.from)) out.from = e.from;
+                return out;
+            }
+
+            // Journal de départ pour des données sans historique (ancienne version)
+            function initLedger(b, pa) {
+                const list = [];
+                const now = new Date().toISOString();
+                const total = r2(b + pa.reduce((x, y) => x + y, 0));
+                if (total > 0) list.push({ t: now, type: 'init', amount: total });
+                for (let k = 1; k <= 30; k++) if (pa[k] > 0) list.push({ t: now, type: 'kazye', k: k, amount: pa[k] });
+                return list;
+            }
+
+            // Valide des données brutes (localStorage ou fichier importé), v1 et v2
+            function normalize(d) {
+                if (!d || typeof d !== 'object') return null;
+                const b = Number(d.balans);
+                const s = {
+                    balans: (isFinite(b) && b >= 0) ? r2(b) : 0,
+                    plan: PLAN_LIST.includes(d.plan) ? d.plan : 5,
+                    mode: d.mode === 'retrait' ? 'retrait' : 'depot',
+                    paidAmt: new Array(31).fill(0),
+                    lastBackup: (typeof d.lastBackup === 'string' && !isNaN(Date.parse(d.lastBackup))) ? d.lastBackup : null,
+                    histPartial: d.histPartial === true
+                };
+                if (Array.isArray(d.paidAmt)) {
+                    for (let i = 1; i <= 30; i++) { const v = Number(d.paidAmt[i]); s.paidAmt[i] = (isFinite(v) && v > 0) ? r2(v) : 0; }
+                } else if (Array.isArray(d.paid)) {           // v1 : on suppose le plan enregistré
+                    for (let i = 1; i <= 30; i++) s.paidAmt[i] = d.paid[i] === true ? r2(i * s.plan) : 0;
+                }
+                const raw = Array.isArray(d.ledger) ? d.ledger : null;
+                let clean = raw ? raw.map(cleanEntry) : null;
+                if (!raw || clean.some(e => e === null)) { clean = initLedger(s.balans, s.paidAmt); s.histPartial = false; }
+                s.ledger = clean;
+                return s;
+            }
+
+            function applyState(s) {
+                balans = s.balans; plan = s.plan; mode = s.mode;
+                paidAmt = s.paidAmt; ledger = s.ledger; lastBackup = s.lastBackup; histPartial = !!s.histPartial;
+                autoPreview = false;
+            }
+
+            // ---------- SAUVEGARDE LOCALE ----------
+            let saveWarned = false;
+            function snapshot() {
+                return {
+                    v: DATA_VERSION,
+                    balans: balans,
+                    plan: plan,
+                    paid: paidAmt.map(v => v > 0),      // gardé pour compatibilité avec l'ancienne version
+                    paidAmt: paidAmt,
+                    mode: mode,
+                    ledger: ledger,
+                    lastBackup: lastBackup,
+                    histPartial: histPartial,
+                    lastUpdated: new Date().toISOString()
+                };
+            }
+            function saveData() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot()));
+                } catch (e) {
+                    console.error('Erreur de sauvegarde:', e);
+                    if (!saveWarned) { saveWarned = true; uiAlert('Pa ka sove done yo nan aparèy la. Fè yon sovgad (Istorik & Sovgad).'); }
+                }
+            }
+            function loadData() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (!raw) return;
+                    const s = normalize(JSON.parse(raw));
+                    if (s) applyState(s);
+                } catch (e) {
+                    console.error('Erreur de chargement:', e);
+                }
+            }
+
+            // ---------- AFFICHAGE ----------
+            function updateBalansUI() {
+                balansDisplay.innerText = balans.toFixed(2);
+                finalBalance.innerText = balans.toFixed(2);
+            }
+
+            function updateHeaderTotal() {
+                let count = 0;
+                for (let i = 1; i <= 30; i++) if (isPaid(i)) count++;
+                selectedTotalHeader.innerText = sumPaid().toFixed(2);
+                selectedCountHeader.innerText = count;
+            }
+
+            function updateTotalPaidAndLabels() {
+                let last = 0, first = '—';
+                for (let i = 1; i <= 30; i++) if (isPaid(i)) last = i;
+                for (let i = 1; i <= 30; i++) if (!isPaid(i)) { first = i; break; }
+                totalPaidDisplay.innerText = sumPaid().toFixed(2) + '$';
+                lastPaidLabel.innerText = last;
+                availableStartLabel.innerText = first;
+            }
+
+            function renderKazyeGrid() {
+                const act = document.activeElement;
+                const focusK = act && act.classList && act.classList.contains('kaz') ? act.dataset.kazye : null;
+                // Case « jaune » : le solde libre ne suffit pas à payer la première case libre.
+                // Affichée seulement après un Depo/Retrè (action globale), jamais après un clic manuel sur une case.
+                let partialK = 0;
+                if (autoPreview && balans > 0) {
+                    for (let k = 1; k <= 30; k++) {
+                        if (!isPaid(k)) { if (r2(k * plan) > balans) partialK = k; break; }
+                    }
+                }
+                let html = '';
+                for (let i = 1; i <= 30; i++) {
+                    const p = isPaid(i);
+                    if (i === partialK) {
+                        const price = r2(i * plan);
+                        html += `<div class="kaz partial" data-kazye="${i}" role="button" tabindex="0" aria-pressed="false" aria-label="Kazye ${i}: ${fmt(balans)}$ sou ${fmt(price)}$, manke ${fmt(r2(price - balans))}$" onclick="window.togglePaid(${i})">
+                        ${i}<br><small>${fmt(balans)}/${fmt(price)}$</small>
+                    </div>`;
+                    } else {
+                        html += `<div class="kaz ${p ? 'paid' : ''}" data-kazye="${i}" role="button" tabindex="0" aria-pressed="${p}" onclick="window.togglePaid(${i})">
+                        ${i}<br><small>${fmt(p ? paidAmt[i] : i * plan)}$</small>
+                    </div>`;
+                    }
+                }
+                kazyeGrid.innerHTML = html;
+                mankeChip.hidden = !partialK;
+                if (partialK) mankeLabel.textContent = fmt(r2(partialK * plan - balans));
+                if (focusK) {
+                    const n = kazyeGrid.querySelector(`[data-kazye="${focusK}"]`);
+                    if (n) n.focus({ preventScroll: true });
+                }
+            }
+
+            function updateBackupWarn() {
+                const old = !lastBackup || (Date.now() - new Date(lastBackup).getTime()) > 7 * 864e5;
+                const warn = ledger.some(e => e.type !== 'plan') && old;
+                histBtn.classList.toggle('warn', warn);
+            }
+
+            function refreshAll() {
+                updateBalansUI();
+                renderKazyeGrid();
+                updateTotalPaidAndLabels();
+                updateHeaderTotal();
+                updateBackupWarn();
+                updateRetraitInfo();
+                if (histModal.classList.contains('active')) renderHistory();
+            }
+
+            function buildPlanButtons() {
+                planButtons.innerHTML = '';
+                PLAN_LIST.forEach(p => {
+                    const btn = document.createElement('button');
+                    btn.innerText = `${p}$`;
+                    btn.className = 'plan-item';
+                    if (p === plan) btn.classList.add('active');
+                    btn.onclick = async () => {
+                        if (p === plan) return;
+                        // Changer de plan = une autre personne : le compte repart à 0
+                        const total = r2(balans + sumPaid());
+                        if (total > 0 && !(await uiConfirm(`Chanje plan ap remèt kont lan a 0. ${fmt(total)}$ ap efase. Kontinye?`, { danger: true }))) return;
+                        log('plan', { amount: total, plan: p, from: plan });
+                        balans = 0;
+                        paidAmt.fill(0);
+                        plan = p;
+                        document.querySelectorAll('.plan-item').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        planLabel.innerText = `${plan}$`;
+                        autoList.innerText = `Nouvo plan: ${plan}$`;
+                        autoPreview = false;
+                        refreshAll();
+                        saveData();
+                    };
+                    planButtons.appendChild(btn);
+                });
+            }
+
+            // ---------- ACTIONS ----------
+            // Clic sur une case : payer (depuis le balans) ou annuler (remboursement au balans)
+            window.togglePaid = async function(k) {
+                if (isPaid(k)) {
+                    const amt = paidAmt[k];
+                    if (!(await uiConfirm(`Anile kazye ${k}? ${fmt(amt)}$ ap tounen nan balans lan.`))) return;
+                    balans = r2(balans + amt);
+                    paidAmt[k] = 0;
+                    log('anile', { k: k, amount: amt });
+                    autoList.innerText = `Kazye ${k} anile`;
+                } else {
+                    const price = r2(k * plan);
+                    if (price > balans) {
+                        const manke = r2(price - balans);
+                        if (!(await uiConfirm(`Balans lan pa ase. Ou manke ${fmt(manke)}$. Depoze ${fmt(manke)}$ epi peye kazye ${k} la?`))) return;
+                        balans = r2(balans + manke);
+                        log('depot', { amount: manke });
+                    }
+                    balans = r2(balans - price);
+                    paidAmt[k] = price;
+                    log('kazye', { k: k, amount: price, plan: plan });
+                    autoList.innerText = `Kazye ${k} peye`;
+                }
+                autoPreview = false;    // action manuelle sur une case précise : pas d'aperçu automatique sur la suivante
+                refreshAll();
+                saveData();
+            };
+
+            async function handleDepot() {
+                const m = parseFloat(montantField.value);
+                if (isNaN(m) || m <= 0) { await uiAlert('Montan valab'); return; }
+                const amount = r2(m);
+                balans = r2(balans + amount);
+                log('depot', { amount: amount });
+                const newSel = [];
+                for (let k = 1; k <= 30; k++) {
+                    if (!isPaid(k)) {
+                        const price = r2(k * plan);
+                        if (price <= balans) {
+                            balans = r2(balans - price);
+                            paidAmt[k] = price;
+                            log('kazye', { k: k, amount: price, plan: plan, auto: true });
+                            newSel.push(k);
+                        } else break;
+                    }
+                }
+                autoList.innerText = newSel.length ? newSel.join(' · ') : 'Pa gen nouvo kazye.';
+                montantField.value = '';
+                autoPreview = true;    // Depo : montre en jaune ce qu'il manque pour la prochaine case
+                refreshAll();
+                saveData();
+            }
+
+            // ---------- RETRAIT, TAXE ET KRAZE ----------
+            const blockedText = (total, tax) => `Retrè bloke. Total kont lan (${fmt(total)}$) pa depase taks plan ${plan}$ la (${fmt(tax)}$).`;
+
+            // Aperçu sous le champ montant (mode retrait uniquement)
+            function updateRetraitInfo() {
+                const show = mode === 'retrait';
+                retraitInfo.hidden = !show;
+                krazeBtn.hidden = !show;
+                if (!show) return;
+                const total = r2(balans + sumPaid());
+                const tax = TAX[plan];
+                const m = parseFloat(montantField.value);
+                let text, blocked = false;
+                if (total <= tax) {
+                    text = `Retrè bloke · total ${fmt(total)}$ · taks plan ${plan}$: ${fmt(tax)}$`;
+                    blocked = true;
+                } else {
+                    const max = r2(total - tax);
+                    if (!isNaN(m) && m > 0 && near(r2(m), max)) text = `Fèmen kont lan · taks ${fmt(tax)}$ · moun nan resevwa ${fmt(max)}$`;
+                    else if (!isNaN(m) && m > max) { text = `Ou ka retire ${fmt(max)}$ maksimòm`; blocked = true; }
+                    else text = `Taks plan ${plan}$: ${fmt(tax)}$ · ou ka retire ${fmt(max)}$ maksimòm`;
+                }
+                retraitInfo.textContent = text;
+                retraitInfo.classList.toggle('blocked', blocked);
+            }
+
+            // Retrait total : la taxe du plan est prélevée, le compte repart à 0
+            async function kraze() {
+                const paid = sumPaid();
+                const total = r2(balans + paid);
+                const tax = TAX[plan];
+                if (total <= tax) { await uiAlert(blockedText(total, tax)); return; }
+                const net = r2(total - tax);
+                if (!(await uiConfirm(`Kraze kont lan (plan ${plan}$)\nTotal: ${fmt(total)}$\nTaks: ${fmt(tax)}$\nMoun nan resevwa: ${fmt(net)}$\nKont lan ap tounen a 0.`, { danger: true }))) return;
+                if (paid > 0) {
+                    balans = r2(balans + paid);
+                    paidAmt.fill(0);
+                    log('efase', { amount: paid, auto: true });
+                }
+                balans = r2(balans - net);
+                log('retrait', { amount: net, plan: plan, kraze: true });
+                balans = r2(balans - tax);
+                log('taks', { amount: tax, plan: plan });
+                if (near(balans, 0)) balans = 0;
+                autoList.innerText = `Kraze — moun nan resevwa ${fmt(net)}$ · taks ${fmt(tax)}$`;
+                montantField.value = '';
+                autoPreview = false;
+                refreshAll();
+                saveData();
+            }
+
+            async function handleRetrait() {
+                const m = parseFloat(montantField.value);
+                if (isNaN(m) || m <= 0) { await uiAlert('Montan valab'); return; }
+                const amount = r2(m);
+                const total = r2(balans + sumPaid());
+                const tax = TAX[plan];
+                if (total <= tax) { await uiAlert(blockedText(total, tax)); return; }
+                const max = r2(total - tax);
+                if (amount > max) { await uiAlert(`Ou ka retire ${fmt(max)}$ maksimòm.`); return; }
+                if (near(amount, max)) { await kraze(); return; }     // le retrait laisse exactement la taxe : le compte se ferme
+                let released = [];
+                if (amount > balans) {
+                    // Balans insuffisant : on propose de libérer les dernières cases payées
+                    const manke = r2(amount - balans);
+                    let got = 0;
+                    for (let k = 30; k >= 1 && got < manke; k--) {
+                        if (isPaid(k)) { released.push(k); got = r2(got + paidAmt[k]); }
+                    }
+                    if (got < manke) {
+                        await uiAlert(`Lajan pa ase: balans + kazye peye = ${fmt(r2(balans + sumPaid()))}$`);
+                        return;
+                    }
+                    if (!(await uiConfirm(`Balans lan pa ase (manke ${fmt(manke)}$). Pou kouvri l, kazye sa yo ap anile: ${released.join(', ')}. Kontinye?`))) return;
+                    released.forEach(k => {
+                        const amt = paidAmt[k];
+                        balans = r2(balans + amt);
+                        paidAmt[k] = 0;
+                        log('anile', { k: k, amount: amt });
+                    });
+                }
+                balans = r2(balans - amount);
+                log('retrait', { amount: amount });
+                autoList.innerText = released.length ? `Retrè — kazye anile: ${released.join(' · ')}` : '— Retrè senp';
+                montantField.value = '';
+                autoPreview = true;    // Retrè : montre en jaune ce qui reste sur la prochaine case (ex: case libérée en partie)
+                refreshAll();
+                saveData();
+            }
+
+            function setMode(newMode) {
+                mode = newMode;
+                if (mode === 'depot') {
+                    modeDepot.classList.add('active'); modeRetrait.classList.remove('active');
+                    actionButton.innerText = 'Kalkile'; actionButton.classList.remove('retrait');
+                } else {
+                    modeRetrait.classList.add('active'); modeDepot.classList.remove('active');
+                    actionButton.innerText = 'Retire'; actionButton.classList.add('retrait');
+                }
+                updateRetraitInfo();
+                saveData();
+            }
+
+            async function clearAllPaid() {
+                const total = sumPaid();
+                if (total === 0) { await uiAlert('Pa gen kazye peye.'); return; }
+                if (!(await uiConfirm(`Efase tout kazye peye yo? ${fmt(total)}$ ap tounen nan balans lan.`, { danger: true }))) return;
+                balans = r2(balans + total);
+                paidAmt.fill(0);
+                log('efase', { amount: total });
+                autoList.innerText = 'Tout kazye efase';
+                autoPreview = false;
+                refreshAll();
+                saveData();
+            }
+
+            // Vérifie que l'état affiché correspond bien au journal ; propose de corriger sinon
+            async function verifyBalans() {
+                const t = sumPaid();
+                const rp = replay(ledger);
+                const okBal = near(rp.balans, balans);
+                const okCases = rp.paidAmt.every((v, i) => near(v, paidAmt[i]));
+                const info = `Peye: ${fmt(t)}$ · Balans: ${fmt(balans)}$ · Total: ${fmt(r2(t + balans))}$`;
+                if (histPartial) {
+                    await uiAlert(`Istorik la pasyèl (kèk liy efase), kidonk pa ka verifye.\n${info}`);
+                    return;
+                }
+                if (okBal && okCases) {
+                    await uiAlert(`Tout koresponn ak istorik la.\n${info}`);
+                    return;
+                }
+                const msg = `Done yo pa koresponn ak istorik la.\n${info}\nIstorik la di: balans ${fmt(rp.balans)}$ · peye ${fmt(r2(rp.paidAmt.reduce((a, b) => a + b, 0)))}$\n\nKore selon istorik la?`;
+                if (await uiConfirm(msg)) {
+                    balans = rp.balans;
+                    paidAmt = rp.paidAmt;
+                    autoPreview = false;
+                    refreshAll();
+                    saveData();
+                }
+            }
+
+            async function resetBalance() {
+                if (balans === 0) { await uiAlert('Balans lan deja 0.'); return; }
+                if (!(await uiConfirm(`Remèt balans a 0? ${fmt(balans)}$ ap soti nan sistèm nan (anrejistre kòm ajisteman).`, { danger: true }))) return;
+                log('reset', { amount: balans });
+                balans = 0;
+                autoPreview = false;
+                refreshAll();
+                saveData();
+            }
+
+            // ---------- ISTORIK ----------
+            const LABELS = { init: 'Solde inisyal', depot: 'Depo', retrait: 'Retrè', kazye: 'Kazye', anile: 'Anile', efase: 'Efase tout', reset: 'Reset balans', taks: 'Taks', plan: 'Chanjman plan' };
+            function fmtDate(iso) {
+                const d = new Date(iso);
+                if (isNaN(d)) return '';
+                return d.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
+            }
+            let histFilter = 'all', histQuery = '', histLimit = 100;
+            const HIST_STEP = 100;
+            const FILTER_TYPES = { all: null, depot: ['depot', 'init'], retrait: ['retrait', 'reset'], kazye: ['kazye', 'anile', 'efase'], taks: ['taks'] };
+            const FILTER_NAMES = { all: 'Tout', depot: 'Depo', retrait: 'Retrè', kazye: 'Kazye', taks: 'Taks' };
+            function histLabel(e) {
+                if (e.type === 'plan') return `Chanjman plan${e.from ? ' ' + e.from + '$' : ''} → ${e.plan}$`;
+                let label = LABELS[e.type];
+                if (e.k) label += ` ${e.k}`;
+                if (e.type === 'kazye' && e.plan) label += ` (${e.k}×${e.plan}$)`;
+                if (e.type === 'taks' && e.plan) label += ` (plan ${e.plan}$)`;
+                if (e.type === 'retrait' && e.kraze) label += ' · kraze';
+                if (e.auto) label += ' · oto';
+                return label;
+            }
+            function histMatch(e) {
+                const types = FILTER_TYPES[histFilter];
+                const q = histQuery.trim().toLowerCase();
+                return (!types || types.includes(e.type)) && (!q || (histLabel(e) + ' ' + fmt(e.amount)).toLowerCase().includes(q));
+            }
+            function dayKey(iso) { const d = new Date(iso); return isNaN(d) ? '' : `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+            function dayLabel(iso) {
+                const d = new Date(iso);
+                if (isNaN(d)) return '';
+                const k = dayKey(iso);
+                const now = new Date();
+                if (k === dayKey(now.toISOString())) return 'Jodi a';
+                if (k === dayKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 12).toISOString())) return 'Yè';
+                return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+            }
+            function fmtTime(iso) {
+                const d = new Date(iso);
+                return isNaN(d) ? '' : d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            }
+            function renderHistory() {
+                let dep = 0, ret = 0, tks = 0;
+                const st = { b: 0, pa: new Array(31).fill(0) };
+                const rows = [];
+                ledger.forEach(e => {
+                    step(st, e);
+                    if (e.type === 'depot' || e.type === 'init') dep += e.amount;
+                    if (e.type === 'retrait' || e.type === 'reset') ret += e.amount;
+                    if (e.type === 'taks') tks += e.amount;
+                    rows.push({ e: e, b: st.b });
+                });
+                histSummary.innerHTML =
+                    `<div><span>Total depoze</span><b>${fmt(r2(dep))}$</b></div>` +
+                    `<div><span>Total retire</span><b>${fmt(r2(ret))}$</b></div>` +
+                    `<div><span>Total taks</span><b>${fmt(r2(tks))}$</b></div>` +
+                    `<div><span>Nan kazye yo</span><b>${fmt(sumPaid())}$</b></div>` +
+                    `<div><span>Balans</span><b>${fmt(balans)}$</b></div>`;
+                lastBackupLabel.innerText = (lastBackup ? `Dènye sovgad: ${fmtDate(lastBackup)}` : 'Ou poko fè okenn sovgad.') + (histPartial ? ' · Istorik pasyèl' : '');
+                const matches = rows.filter(r => histMatch(r.e));
+                histClearBtn.disabled = matches.length === 0;
+                histClearCount.textContent = matches.length ? ` (${matches.length})` : '';
+                if (!rows.length) { histList.innerHTML = '<div class="hist-row">Poko gen tranzaksyon.</div>'; return; }
+                if (!matches.length) { histList.innerHTML = '<div class="hist-row">Pa gen rezilta.</div>'; return; }
+                const shown = matches.slice().reverse().slice(0, histLimit);
+                let html = '', lastDay = null;
+                shown.forEach(({ e, b }) => {
+                    const dk = dayKey(e.t);
+                    if (dk !== lastDay) { html += `<div class="hist-day">${dayLabel(e.t)}</div>`; lastDay = dk; }
+                    const plus = SIGN[e.type] > 0;
+                    const amt = (e.type === 'plan' && !e.amount) ? '' : `${plus ? '+' : '−'}${fmt(e.amount)}$`;
+                    html += `<div class="hist-row"><div class="h-l">${histLabel(e)}<small>${fmtTime(e.t)}</small></div>` +
+                            `<div class="h-r"><span class="${plus ? 'h-plus' : 'h-minus'}">${amt}</span>${histPartial ? '' : `<small>balans: ${fmt(b)}$</small>`}</div></div>`;
+                });
+                if (matches.length > shown.length) html += `<button type="button" class="hist-more" id="histMore">Wè plis (${matches.length - shown.length})</button>`;
+                histList.innerHTML = html;
+            }
+
+            // Efface des lignes de l'historique (jamais le solde ni les casiers)
+            async function clearHistory() {
+                const n = ledger.filter(histMatch).length;
+                if (!n) return;
+                const q = histQuery.trim();
+                const full = !FILTER_TYPES[histFilter] && !q;
+                const msg = full
+                    ? `Efase tout istorik la (${n} liy)? Balans ak kazye yo pa chanje. Sa pa ka defèt.\nKonsèy: fè yon sovgad (Ekspòte) anvan.`
+                    : `Efase ${n} liy sa yo (${FILTER_NAMES[histFilter]}${q ? ` · "${q}"` : ''})? Balans ak kazye yo pa chanje, men istorik la ap vin pasyèl. Sa pa ka defèt.\nKonsèy: fè yon sovgad (Ekspòte) anvan.`;
+                if (!(await uiConfirm(msg, { danger: true }))) return;
+                if (full) { ledger = initLedger(balans, paidAmt); histPartial = false; }
+                else { ledger = ledger.filter(e => !histMatch(e)); histPartial = true; }
+                histLimit = HIST_STEP;
+                refreshAll();
+                saveData();
+            }
+
+// ---------- EXPORT / IMPORT ----------
+            async function exportBackup() {
+                const now = new Date().toISOString();
+                const payload = { app: 'cash-shalom', v: DATA_VERSION, exportedAt: now, data: Object.assign(snapshot(), { lastBackup: now }) };
+                const name = `cash-shalom-${now.slice(0, 10)}.json`;
+                const file = new File([JSON.stringify(payload, null, 2)], name, { type: 'application/json' });
+                let done = false;
+                try {
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({ files: [file], title: 'Cash Shalom · sovgad' });
+                        done = true;
+                    }
+                } catch (e) {
+                    if (e && e.name === 'AbortError') return;   // l'utilisateur a annulé
+                }
+                if (!done) {
+                    const url = URL.createObjectURL(file);
+                    const a = document.createElement('a');
+                    a.href = url; a.download = name;
+                    document.body.appendChild(a); a.click(); a.remove();
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                }
+                lastBackup = now;
+                saveData();
+                refreshAll();
+            }
+
+            async function importBackup() {
+                const f = importFile.files[0];
+                importFile.value = '';
+                if (!f) return;
+                try {
+                    const obj = JSON.parse(await f.text());
+                    if (obj && obj.app && obj.app !== 'cash-shalom') throw new Error('app');
+                    const s = normalize(obj && obj.data ? obj.data : obj);
+                    if (!s) throw new Error('data');
+                    if (!(await uiConfirm('Ranplase tout done aktyèl yo ak sovgad sa a? (Sa pa ka defèt.)', { danger: true }))) return;
+                    applyState(s);
+                    buildPlanButtons();
+                    planLabel.innerText = `${plan}$`;
+                    setMode(mode);
+                    refreshAll();
+                    saveData();
+                    await uiAlert('Sovgad la restore.');
+                } catch (e) {
+                    await uiAlert('Fichye a pa valab.');
+                }
+            }
+
+            // ---------- CALCULATRICE PLEIN ÉCRAN (san eval) ----------
+            let calcStr = '0';
+            let calcFresh = false;      // true apre "=" oswa erè
+            let angleMode = 'DEG';
+            const calcDisplay = document.getElementById('calcDisplay');
+
+            function updateCalcDisplay() {
+                calcDisplay.innerText = calcStr.replace(/\*/g, '×').replace(/\//g, '÷').replace(/sqrt/g, '√');
+            }
+            function calcStart(c) {
+                if (calcStr === 'Error') { calcStr = '0'; calcFresh = false; }
+                if (calcFresh) { if (!/^[-+*\/^%!]$/.test(c)) calcStr = '0'; calcFresh = false; }
+            }
+            function calcFormat(v) {
+                if (!isFinite(v)) throw new Error('math');
+                if (Math.abs(v) < 1e-12) v = 0;
+                return parseFloat(v.toPrecision(12)).toString().replace(/e\+?(-?\d+)/, '*10^$1');
+            }
+            function calcEval(src) {
+                const bad = () => { throw new Error('syntax'); };
+                const toks = [];
+                let i = 0;
+                while (i < src.length) {
+                    const ch = src[i];
+                    if (/[0-9.]/.test(ch)) {
+                        let j = i;
+                        while (j < src.length && /[0-9.]/.test(src[j])) j++;
+                        const t = src.slice(i, j);
+                        if (t === '.' || t.split('.').length > 2) bad();
+                        toks.push({ n: parseFloat(t) }); i = j;
+                    } else if (ch === 'π') { toks.push({ n: Math.PI }); i++; }
+                    else if (ch === 'e') { toks.push({ n: Math.E }); i++; }
+                    else {
+                        const f = /^(sqrt|ln|log|sin|cos|tan)\(/.exec(src.slice(i));
+                        if (f) { toks.push({ f: f[1] }, { o: '(' }); i += f[0].length; }
+                        else if ('+-*/^()!%'.includes(ch)) { toks.push({ o: ch }); i++; }
+                        else bad();
+                    }
+                }
+                let p = 0;
+                const isO = c => toks[p] && toks[p].o === c;
+                const rad = x => angleMode === 'DEG' ? x * Math.PI / 180 : x;
+                function applyFn(f, a) {
+                    switch (f) {
+                        case 'sqrt': if (a < 0) bad(); return Math.sqrt(a);
+                        case 'ln':   if (a <= 0) bad(); return Math.log(a);
+                        case 'log':  if (a <= 0) bad(); return Math.log10(a);
+                        case 'sin':  return Math.sin(rad(a));
+                        case 'cos':  return Math.cos(rad(a));
+                        default:     return Math.tan(rad(a));
+                    }
+                }
+                function fact(n) {
+                    if (!Number.isInteger(n) || n < 0 || n > 170) bad();
+                    let r = 1;
+                    for (let k = 2; k <= n; k++) r *= k;
+                    return r;
+                }
+                function expr() {
+                    let v = term();
+                    while (isO('+') || isO('-')) { const o = toks[p++].o; const r = term(); v = o === '+' ? v + r : v - r; }
+                    return v;
+                }
+                function term() {
+                    let v = unary();
+                    for (;;) {
+                        if (isO('*') || isO('/')) { const o = toks[p++].o; const r = unary(); v = o === '*' ? v * r : v / r; }
+                        else if (toks[p] && (toks[p].n !== undefined || toks[p].f || isO('('))) v *= unary();   // 2π, 3(4)
+                        else break;
+                    }
+                    return v;
+                }
+                function unary() {
+                    if (isO('-')) { p++; return -unary(); }
+                    if (isO('+')) { p++; return unary(); }
+                    return power();
+                }
+                function power() {
+                    const b = postfix();
+                    if (isO('^')) { p++; return Math.pow(b, unary()); }
+                    return b;
+                }
+                function postfix() {
+                    let v = primary();
+                    for (;;) {
+                        if (isO('!')) { p++; v = fact(v); }
+                        else if (isO('%')) { p++; v /= 100; }
+                        else break;
+                    }
+                    return v;
+                }
+                function primary() {
+                    const t = toks[p++];
+                    if (!t) bad();
+                    if (t.n !== undefined) return t.n;
+                    if (t.f) { p++; const a = expr(); if (isO(')')) p++; return applyFn(t.f, a); }
+                    if (t.o === '(') { const v = expr(); if (isO(')')) p++; return v; }
+                    return bad();
+                }
+                const res = expr();
+                if (p < toks.length) bad();
+                return res;
+            }
+
+            window.calcInput = function(c) {
+                calcStart(c);
+                if (c === '.' && calcStr.split(/[^0-9.]/).pop().includes('.')) return;
+                if (calcStr === '0' && /^[0-9πe(]$/.test(c)) calcStr = c;
+                else calcStr += c;
+                updateCalcDisplay();
+            };
+            window.calcOp = function(op) {
+                calcStart(op);
+                if (/[-+*\/]$/.test(calcStr)) calcStr = calcStr.slice(0, -1);
+                calcStr += op;
+                updateCalcDisplay();
+            };
+            window.calcFn = function(fn) {
+                calcStart(fn === 'fact' ? '!' : fn);
+                if (fn === 'fact') calcStr += '!';
+                else calcStr = (calcStr === '0' ? '' : calcStr) + fn + '(';
+                updateCalcDisplay();
+            };
+            window.calcClearAll = function() { calcStr = '0'; calcFresh = false; updateCalcDisplay(); };
+            window.calcDelete = function() {
+                if (calcStr === 'Error') calcStr = '0';
+                else calcStr = calcStr.replace(/(sqrt|ln|log|sin|cos|tan)\($|.$/, '') || '0';
+                calcFresh = false;
+                updateCalcDisplay();
+            };
+            window.calcEquals = function() {
+                try { calcStr = calcFormat(calcEval(calcStr)); }
+                catch { calcStr = 'Error'; }
+                calcFresh = true;
+                updateCalcDisplay();
+            };
+            window.calcSetAngle = function(m) {
+                angleMode = m;
+                document.getElementById('angDeg').classList.toggle('active', m === 'DEG');
+                document.getElementById('angRad').classList.toggle('active', m === 'RAD');
+            };
+            function closeCalcModal() {
+                const had = calcModal.contains(document.activeElement);
+                calcModal.classList.remove('active');
+                if (had) calcToggle.focus({ preventScroll: true });
+            }
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && calcModal.classList.contains('active')) closeCalcModal(); });
+
+            calcToggle.addEventListener('click', () => { calcModal.classList.add('active'); calcContainer.focus({ preventScroll: true }); });
+            closeCalc.addEventListener('click', closeCalcModal);
+            calcModal.addEventListener('click', (e) => { if(e.target === calcModal) closeCalcModal(); });
+
+            // Clavier : chiffres, opérateurs, Entrée / =, Retour arrière, Suppr
+            document.addEventListener('keydown', (e) => {
+                if (!calcModal.classList.contains('active') || dlg.classList.contains('active')) return;
+                if (e.ctrlKey || e.metaKey || e.altKey) return;
+                const k = e.key;
+                const onBtn = e.target && e.target.tagName === 'BUTTON';
+                let handled = true;
+                if (/^[0-9]$/.test(k)) window.calcInput(k);
+                else if (k === '.' || k === ',') window.calcInput('.');
+                else if (k === '+' || k === '-' || k === '*' || k === '/') window.calcOp(k);
+                else if (k === 'x' || k === 'X') window.calcOp('*');
+                else if (k === '!') window.calcFn('fact');
+                else if (k === '%' || k === '^' || k === '(' || k === ')') window.calcInput(k);
+                else if (k === 'p' || k === 'P') window.calcInput('π');
+                else if (k === 'e') window.calcInput('e');
+                else if (k === '=' || (k === 'Enter' && !onBtn)) window.calcEquals();
+                else if (k === 'Backspace') window.calcDelete();
+                else if (k === 'Delete' || k === 'c' || k === 'C') window.calcClearAll();
+                else handled = false;
+                if (handled) e.preventDefault();
+            });
+
+            // Éléments role="button" (cases, DEG/RAD) : Entrée et Espace
+            document.addEventListener('keydown', (e) => {
+                if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('[role="button"]')) {
+                    e.preventDefault();
+                    e.target.click();
+                }
+            });
+
+            // ---------- INITIALISATION ----------
+            function init() {
+                loadData();
+                buildPlanButtons();
+                planLabel.innerText = `${plan}$`;
+                setMode(mode);
+                refreshAll();
+                saveData();   // persiste le journal créé lors d'une migration éventuelle
+
+                modeDepot.addEventListener('click', ()=>setMode('depot'));
+                modeRetrait.addEventListener('click', ()=>setMode('retrait'));
+                actionButton.addEventListener('click', ()=> mode==='depot'? handleDepot() : handleRetrait());
+                montantField.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.repeat) { e.preventDefault(); actionButton.click(); }
+                });
+                montantField.addEventListener('input', updateRetraitInfo);
+                krazeBtn.addEventListener('click', kraze);
+                histClearBtn.addEventListener('click', clearHistory);
+                clearPaidBtn.addEventListener('click', clearAllPaid);
+                verifyBtn.addEventListener('click', verifyBalans);
+                resetBalanceBtn.addEventListener('click', resetBalance);
+
+                histBtn.addEventListener('click', () => { renderHistory(); histModal.classList.add('active'); });
+                closeHist.addEventListener('click', () => histModal.classList.remove('active'));
+                document.addEventListener('keydown', (e) => { if (e.key === 'Escape') histModal.classList.remove('active'); });
+                exportBtn.addEventListener('click', exportBackup);
+                histFilters.addEventListener('click', (e) => {
+                    const btn = e.target.closest('[data-f]');
+                    if (!btn) return;
+                    histFilter = btn.dataset.f;
+                    histLimit = HIST_STEP;
+                    histFilters.querySelectorAll('[data-f]').forEach(x => {
+                        const on = x === btn;
+                        x.classList.toggle('active', on);
+                        x.setAttribute('aria-pressed', on ? 'true' : 'false');
+                    });
+                    renderHistory();
+                });
+                histSearch.addEventListener('input', () => { histQuery = histSearch.value; histLimit = HIST_STEP; renderHistory(); });
+                histList.addEventListener('click', (e) => { if (e.target.closest('#histMore')) { histLimit += HIST_STEP; renderHistory(); } });
+                importBtn.addEventListener('click', () => importFile.click());
+                importFile.addEventListener('change', importBackup);
+
+                // Demande au navigateur de ne pas effacer les données automatiquement
+                if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+            }
+
+            init();
+        })();
+    </script>
+
+    <!-- Bascule clair / sombre (apparence uniquement) -->
+    <script>
+        (function () {
+            var root = document.documentElement;
+            var btn = document.getElementById('themeToggle');
+            var meta = document.querySelector('meta[name="theme-color"]');
+            function apply(t) {
+                root.setAttribute('data-theme', t);
+                btn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+                if (meta) meta.setAttribute('content', t === 'dark' ? '#15191e' : '#ffffff');
+            }
+            apply(root.getAttribute('data-theme') || 'light');
+            btn.addEventListener('click', function () {
+                var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                apply(next);
+                try { localStorage.setItem('cashShalomTheme', next); } catch (e) {}
+            });
+        })();
+    </script>
+
+    <!-- Service Worker pour PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker enregistré avec succès');
+                    })
+                    .catch(err => {
+                        console.log('Échec enregistrement Service Worker: ', err);
+                    });
+            });
+        }
+    </script>
+</body>
+  </html>
